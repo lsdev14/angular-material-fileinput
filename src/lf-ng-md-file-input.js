@@ -122,7 +122,7 @@
         $templateCache.put('lfNgMdFileinput.html', [
             '<div layout="column" class="lf-ng-md-file-input" ng-model="'+genLfObjId()+'">',
                 '<div layout="column" class="lf-ng-md-file-input-preview-container" ng-class="{\'disabled\':isDisabled}" ng-show="isDrag || (isPreview && lfFiles.length)">',
-                    '<md-button aria-label="remove all files" class="close lf-ng-md-file-input-x" ng-click="removeAllFiles($event)" ng-hide="!lfFiles.length || !isPreview" >&times;</md-button>',
+                    '<md-button aria-label="remove all files" class="close lf-ng-md-file-input-x" ng-click="removeAllFiles($event)" ng-hide="!lfFiles.length || !isPreview || !isMutiple" >&times;</md-button>',
                     '<div class="lf-ng-md-file-input-drag">',
                         '<div layout="row" layout-align="center center" class="lf-ng-md-file-input-drag-text-container" ng-show="(!lfFiles.length || !isPreview) && isDrag">',
                             '<div class="lf-ng-md-file-input-drag-text">{{strCaptionDragAndDrop}}</div>',
@@ -356,8 +356,7 @@
                 lfOnFileClick: '=?',
                 lfOnFileRemove: '=?',
                 accept:'@?',
-                ngDisabled:'=?',
-                lfBase64:'=?'
+                ngDisabled:'=?'
             },
             link: function(scope,element,attrs,ctrl){
 
@@ -400,6 +399,11 @@
                     scope.$watch('ngDisabled', function(isDisabled) {
                         scope.isDisabled = isDisabled;
                     });
+                }
+
+                var lfBase64 = false;
+                if(angular.isDefined(attrs.lfBase64)){
+                    lfBase64 = true;
                 }
 
                 scope.strBrowseIconCls = "lf-browse";
