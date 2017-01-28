@@ -338,7 +338,7 @@
         }
     });
 
-    lfNgMdFileinput.directive('lfNgMdFileInput',['$q','$compile','$timeout', function($q,$compile,$timeout){
+    lfNgMdFileinput.directive('lfNgMdFileInput',['$q','$compile','$timeout','$window', function($q,$compile,$timeout,$window){
         return {
             restrict: 'E',
             templateUrl: 'lfNgMdFileinput.html',
@@ -356,7 +356,8 @@
                 lfOnFileClick: '=?',
                 lfOnFileRemove: '=?',
                 accept:'@?',
-                ngDisabled:'=?'
+                ngDisabled:'=?',
+                lfBase64:'=?'
             },
             link: function(scope,element,attrs,ctrl){
 
@@ -629,6 +630,16 @@
                     ctrl.$validate();
                 }
 
+                function _arrayBufferToBase64( buffer ){
+                    var binary = '';
+                    var bytes = new Uint8Array( buffer );
+                    var len = bytes.byteLength;
+                    for (var i = 0; i < len; i++) {
+                        binary += String.fromCharCode( bytes[ i ] );
+                    }
+                    return $window.btoa( binary );
+                }                
+
 				var readFile = function(file){
 					readAsDataURL(file).then(function(result){
 
@@ -650,6 +661,9 @@
 
                         if(!isFileAreadyExist){
                             var obj = genLfFileObj(file);
+                            if (attrs.lfBase64) {
+                                obj.base64 = _arrayBufferToBase64(result.result);
+                            }                            
 						    scope.lfFiles.push(obj);
                         }
                         if(scope.intLoading==0) {
